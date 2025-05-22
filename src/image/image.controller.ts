@@ -20,7 +20,7 @@ export class ImageController {
       //TO DO: or maybe use image data in base64 format and send to bot
       //directly
       storage: diskStorage({
-        destination: './uploads/images',
+        destination: './uploads',
         filename: (req, file, callback) => {
 
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
@@ -87,7 +87,7 @@ export class ImageController {
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
-        destination: './uploads/images',
+        destination: './uploads',
         filename: (req, file, callback) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
           const ext = extname(file.originalname);
@@ -144,7 +144,7 @@ export class ImageController {
 
   @Get(':filename')
   async getImage(@Param('filename') filename: string, @Res() res: Response) {
-    const imagePath = path.join(process.cwd(), 'uploads/images', filename);
+    const imagePath = path.join(process.cwd(), 'uploads', filename);
     
     if (!fs.existsSync(imagePath)) {
       throw new HttpException('Image not found', HttpStatus.NOT_FOUND);
