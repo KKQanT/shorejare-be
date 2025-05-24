@@ -1,28 +1,29 @@
 import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
+import { fetchMarketData } from '../../utils/market-data.util';
 
-//mock tool
 export const analyzeChartPatternTool = new DynamicStructuredTool({
   name: 'analyze_chart_pattern',
-  description: 'Analyze the chart pattern for a specific trading indicator',
+  description: 'Get historical market data for a specific cryptocurrency symbol from Yahoo Finance',
   schema: z.object({
-    indicator: z.string().describe('The trading indicator to analyze (e.g., "RSI", "MACD", "Moving Average")'),
+    symbol: z.string().describe('The cryptocurrency symbol to analyze (e.g., "BTC", "ETH", "SOL")'),
+    interval: z.string().optional().describe('The data interval (e.g., "1d", "1h", "15m"). Default is "1d"'),
+    period: z.string().optional().describe('The lookback period (e.g., "2mo" for 2 months). Default is "2mo"'),
   }),
-  func: async ({ indicator }) => {
-    // This is a placeholder. In a real implementation, this would analyze the chart
-    const patterns = ['bullish', 'bearish', 'neutral'];
-    const randomPattern = patterns[Math.floor(Math.random() * patterns.length)];
-    
-    return JSON.stringify({
-      indicator,
-      pattern: randomPattern,
-      strength: Math.random() * 10,
-      timestamp: new Date().toISOString(),
-    });
+  func: async ({ symbol, interval = '1d', period = '2mo' }) => {
+    try {
+      const marketData = await fetchMarketData(symbol, interval, period);
+      return JSON.stringify(marketData);
+    } catch (error) {
+      console.error('Error in analyzeChartPatternTool:', error);
+      return JSON.stringify({
+        error: 'Failed to fetch chart data',
+        message: error.message || 'Unknown error',
+      });
+    }
   },
 });
 
-// Example tool to get trading recommendations
 export const getTradingRecommendationTool = new DynamicStructuredTool({
   name: 'get_trading_recommendation',
   description: 'Get a trading recommendation based on current market conditions',
@@ -31,7 +32,6 @@ export const getTradingRecommendationTool = new DynamicStructuredTool({
     timeframe: z.string().describe('The timeframe for the recommendation (e.g., "short-term", "medium-term", "long-term")'),
   }),
   func: async ({ symbol, timeframe }) => {
-    // This is a placeholder. In a real implementation, this would provide a real recommendation
     const actions = ['buy', 'sell', 'hold'];
     const randomAction = actions[Math.floor(Math.random() * actions.length)];
     
