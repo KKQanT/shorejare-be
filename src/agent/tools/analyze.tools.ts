@@ -18,7 +18,7 @@ export const fetchMarketDataTool = tool(async (input: {
       messages: [
         new ToolMessage({
           name: 'fetch_market_data',
-          content: "Successfully fetched market data",
+          content: JSON.stringify(marketData),
           tool_call_id: config.toolCall.id,
         })
       ],
