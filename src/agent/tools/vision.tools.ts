@@ -25,16 +25,16 @@ export const analyzeImageTool = new DynamicStructuredTool({
       const prompt = `
         You are an expert trading chart analyzer. Analyze this trading chart image and extract:
         1. The cryptocurrency or stock symbol (e.g., BTC, ETH, AAPL)
-        2. The timeframe of the chart (e.g., 1m, 5m, 15m, 1h, 4h, 1d)
-        3. Any key price levels visible (support/resistance)
-        4. Current trend direction (bullish, bearish, or ranging)
+        2. The interval of the chart (e.g., 1m, 5m, 15m, 1h, 4h, 1d)
+
+        if you can't detect the symbol or interval, use the current date which is ${new Date().toISOString()}
         
         Format your response as a JSON object with these exact keys:
         {
           "symbol": "detected_symbol",
-          "timeframe": "detected_timeframe",
-          "priceLevels": [list_of_key_levels],
-          "trend": "detected_trend"
+          "interval": "1d",
+          "timeStart": "2024-01-01T15:30:00Z",
+          "timeEnd": "2024-01-31T15:30:00Z"
         }
         
         Only return the JSON object, no other text.
