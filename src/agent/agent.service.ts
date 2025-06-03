@@ -33,7 +33,15 @@ export class AgentService {
 
           console.log('chunk sender: ', chunk.sender);
 
-          if (chunk.sender === "user") {
+          if (chunk.sender === "reception_agent") {
+            //console.log('chunk receptionist: ', chunk);
+
+            //check if the latest message is a tool call
+            const lastMessage = chunk.messages[chunk.messages.length - 1];
+            if (lastMessage.type === "tool_call") {
+              console.log('tool call: ', lastMessage.content);
+            }
+
             continue;
           }
 

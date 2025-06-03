@@ -12,9 +12,6 @@ export async function agentRouter(state: typeof AgentGlobalState.State): Promise
 
   if (lastMessage instanceof ToolMessage) {
     if (lastMessage.name === "fetch_market_data") {
-      const marketDate : ChartDataPoint[] = JSON.parse(lastMessage.content as string);
-      //update the state with the market data
-      state.marketData = marketDate;
       return "analyze_market_data";
     }
   }
@@ -55,13 +52,11 @@ export async function receptionAgentNode(state: typeof AgentGlobalState.State) {
 
 export async function analyzeMarketDataNode(state: typeof AgentGlobalState.State) {
   const marketData = state.marketData;
-
-  console.log("marketData: ", marketData);
   
   return {
     messages: [
       ...state.messages, 
-      //new AIMessage("You should buy this coin")
+      new AIMessage("You should buy this coin")
     ],
     sender: "analyze_market_data",
   }
