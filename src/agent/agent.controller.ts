@@ -1,5 +1,4 @@
 import { Body, Controller, Post, Res } from '@nestjs/common';
-import { TradingService } from './trading-service';
 import { ImageChatDto } from './dto/image-chat.dto';
 import { Response } from 'express';
 import { ChatMessageDto } from './dto/chat-message.dto';
@@ -10,44 +9,8 @@ import { AgentService } from './agent.service';
 @Controller('agent')
 export class AgentController {
   constructor(
-    private readonly tradingService: TradingService, 
     private readonly agentService: AgentService
   ) {}
-
-  @Post('chat')
-  @ApiOperation({ summary: 'Chat with AI agent', description: 'Send a message to the AI trading agent and get a response' })
-  @ApiBody({ 
-    schema: {
-      type: 'object',
-      properties: {
-        message: {
-          type: 'string',
-          example: 'Tell me about current market trends'
-        }
-      }
-    }
-  })
-  @ApiResponse({ status: 200, description: 'Successfully processed chat message' })
-  async chat(@Body('message') message: string) {
-    return {
-      response: await this.tradingService.processMessage(message),
-    };
-  }
-
-  @Post('chat-with-image')
-  @ApiOperation({ summary: 'Chat with AI about an image', description: 'Send a message and image filename to the AI agent for analysis' })
-  @ApiBody({ type: ImageChatDto })
-  @ApiResponse({ status: 200, description: 'Successfully processed chat with image' })
-  @ApiResponse({ status: 400, description: 'Bad request - Invalid input' })
-  @ApiResponse({ status: 500, description: 'Internal server error' })
-  async chatWithImage(@Body() imageChatDto: ImageChatDto) {
-    return {
-      response: await this.tradingService.processMessageWithImage(
-        imageChatDto.message,
-        imageChatDto.filename
-      ),
-    };
-  }
 
   @Post('chat-with-image-stream')
   @ApiOperation({ summary: 'Chat with AI about an image (streamed)', description: 'Send a message and image filename to the AI agent and receive a streamed response' })
@@ -68,7 +31,7 @@ export class AgentController {
     console.log(`Processing chat with image: ${imageChatDto.message}, filename: ${imageChatDto.filename}`);
     
     try {
-      await this.tradingService.streamMessageWithImage(
+      await this.agentService.streamMessageWithImage(
         imageChatDto.message,
         imageChatDto.filename,
         (token) => {
