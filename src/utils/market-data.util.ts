@@ -14,18 +14,19 @@ export interface ChartDataPoint {
 export async function fetchMarketData(
   symbol: string,
   interval: string = '1d', //1h, 15m, 1w 
-  period: string = '2mo'
+  timeStart: string = '2024-01-01T15:30:00Z',
+  timeEnd: string = '2024-01-31T15:30:00Z'
 ): Promise<ChartDataPoint[]> {
   try {
     // Calculate periods based on current time
-    const now = new Date();
-    const twoMonthsAgo = new Date();
-    twoMonthsAgo.setMonth(now.getMonth() - 2);
+
+    const timeStartTimestamp = Math.floor(new Date(timeStart).getTime() / 1000);
+    const timeEndTimestamp = Math.floor(new Date(timeEnd).getTime() / 1000);
     
     const url = `https://query2.finance.yahoo.com/v8/finance/chart/${symbol}-USD`;
     const params = {
-      period1: Math.floor(twoMonthsAgo.getTime() / 1000),
-      period2: Math.floor(now.getTime() / 1000),
+      period1: timeStartTimestamp,
+      period2: timeEndTimestamp,
       interval: interval,
       includePrePost: 'true',
       events: 'div|split|earn',
