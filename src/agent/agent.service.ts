@@ -29,18 +29,26 @@ export class AgentService {
 
 
       for await (const chunk of streamResults) {
-        console.log('chunk', chunk);
         if (typeof chunk === 'object') {
-          if (chunk.messages) {
-            for (const message of chunk.messages) {
-              onToken(message.content as string);
-            }
+
+          console.log('chunk sender: ', chunk.sender);
+
+          if (chunk.sender === "user") {
+            continue;
+          }
+
+          if (chunk.sender === "end") {
+            const lastMessage = chunk.messages[chunk.messages.length - 1];
+            //remove the word "FINAL ANSWER"
+            onToken((lastMessage.content as string).replace("FINAL ANSWER", ""));
+            continue;
           }
         }
 
-        if (chunk.content) {
-          onToken(chunk.content as string);
-        }
+        //if (chunk.content) {
+        //  onToken(chunk.content as string);
+        //  continue;
+        //}
 
       }
 

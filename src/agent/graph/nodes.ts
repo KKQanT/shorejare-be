@@ -59,14 +59,17 @@ export async function analyzeMarketDataNode(state: typeof AgentGlobalState.State
   console.log("marketData: ", marketData);
   
   return {
-    messages: [...state.messages, new AIMessage("You should buy this coin")],
+    messages: [
+      ...state.messages, 
+      //new AIMessage("You should buy this coin")
+    ],
     sender: "analyze_market_data",
   }
 }
 
 export async function endNode(state: typeof AgentGlobalState.State) {
   return {
-    messages: [...state.messages, new AIMessage("You should buy this coin")],
+    messages: [...state.messages],
     sender: "end",
   }
 }

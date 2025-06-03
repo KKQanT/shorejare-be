@@ -75,17 +75,20 @@ export class AgentController {
     try {
       await this.agentService.streamMessage(
         chatMessageDto.message,
+        //call back function to send token to the client -> this is the onToken function
         (token) => {
-          console.log(`Sending token: ${token}`);
+          //console.log(`Sending token: ${token}`);
           res.write(`data: ${JSON.stringify({ content: token })}\n\n`);
         },
+        //call back function to send done signal to the client -> this is the onComplete function
         () => {
-          console.log('Streaming complete');
+          //console.log('Streaming complete');
           res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
           res.end();
         },
+        //if error occurs, this will be called -> this is the onError function
         (error) => {
-          console.error('Streaming error:', error);
+          //console.error('Streaming error:', error);
           res.write(`data: ${JSON.stringify({ error: error.message })}\n\n`);
           res.end();
         }
