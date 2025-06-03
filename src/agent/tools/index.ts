@@ -1,16 +1,16 @@
-import { analyzeChartPatternTool, getTradingRecommendationTool } from './analyze.tools';
+import { fetchMarketDataTool, getTradingRecommendationTool } from './analyze.tools';
 import { analyzeImageTool } from './vision.tools';
 import { technicalAnalysisTool } from './technical-analysis.tools';
 
 export {
-  analyzeChartPatternTool, 
+  fetchMarketDataTool,
   getTradingRecommendationTool,
   analyzeImageTool,
   technicalAnalysisTool,
 };
 
 export const tools = [
-  analyzeChartPatternTool,
+  fetchMarketDataTool,
   getTradingRecommendationTool,
   analyzeImageTool,
   technicalAnalysisTool,
