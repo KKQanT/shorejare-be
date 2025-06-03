@@ -2,20 +2,26 @@ import { DynamicStructuredTool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { fetchMarketData } from '../../utils/market-data.util';
 
-export const analyzeChartPatternTool = new DynamicStructuredTool({
-  name: 'analyze_chart_pattern',
+export const fetchMarketDataTool = new DynamicStructuredTool({
+  name: 'fetch_market_data',
   description: 'Get historical market data for a specific cryptocurrency symbol from Yahoo Finance',
   schema: z.object({
     symbol: z.string().describe('The cryptocurrency symbol to analyze (e.g., "BTC", "ETH", "SOL")'),
     interval: z.string().optional().describe('The data interval (e.g., "1d", "1h", "15m"). Default is "1d"'),
-    period: z.string().optional().describe('The lookback period (e.g., "2mo" for 2 months). Default is "2mo"'),
+    timeStart: z.string().optional().describe('The start date of the data (e.g., "2024-01-01T15:30:00Z").'),
+    timeEnd: z.string().optional().describe('The end date of the data (e.g., "2024-01-31T15:30:00Z").'),
   }),
-  func: async ({ symbol, interval = '1d', period = '2mo' }) => {
+  func: async ({ 
+    symbol, 
+    interval = '1d', 
+    timeStart,
+    timeEnd
+  }) => {
     try {
-      const marketData = await fetchMarketData(symbol, interval, period);
+      const marketData = await fetchMarketData(symbol, interval, timeStart, timeEnd);
       return JSON.stringify(marketData);
     } catch (error) {
-      console.error('Error in analyzeChartPatternTool:', error);
+      console.error('Error in fetchMarketDataTool:', error);
       return JSON.stringify({
         error: 'Failed to fetch chart data',
         message: error.message || 'Unknown error',
